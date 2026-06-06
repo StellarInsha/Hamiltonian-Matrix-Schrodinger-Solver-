@@ -12,20 +12,21 @@ h = x[1] - x[0]                     # grid spacing
 
 
 def V(x):
-    return 0.5 * x**2               # harmonic oscillator  →  exact: E_n = n + 0.5
+    return 0.5 * x**2               # harmonic oscillator t: E_n = (n + 0.5)x**2
     # return 0.5*x**2 + 0.1*x**4   # anharmonic (no exact answer — computer only)
-    # return (x**2 - 2.0)**2        # double well (quantum tunneling)
+    # return (x**2 - 2.0)**2        # double well (quantum tunneling happens here)
     
 
 
-# Building the Hamiltonian matrix H
+# Building the Hamiltonian matrix H instead of solving the differential operator H
 # In quantum mechanics: H = T + V
-# T = kinetic energy = -(ħ²/2m) d²/dx²   (in natural units ħ=1, m=1/2 → T = -d²/dx²)
+# T = kinetic energy = -(ħ²/2m) d²/dx² (in natural units ħ=1, m=1/2 → T = -d²/dx²)\
+# V here is trivial
 
-# The second derivative d²ψ/dx² ≈ (ψ[i-1] - 2ψ[i] + ψ[i+1]) / h²
+# The second derivative d²ψ/dx² ≈ (ψ[i-1] - 2ψ[i] + ψ[i+1]) / h² by Taylor Expansion
 # So -½ * d²ψ/dx² ≈ ψ[i]/h² - ψ[i-1]/(2h²) - ψ[i+1]/(2h²)
-#
-# Written as a matrix, H is tridiagonal:
+
+# Written as a matrix, H is tridiagonal cause the second derivative at grid point i only involves the neighboring points i-1 and i+1
 #   diagonal entry [i,i]   = 1/h² + V(x[i])
 #   off-diagonal   [i,i±1] = -1/(2h²)
 
@@ -38,8 +39,7 @@ H = (np.diag(main_diagonal)
 
 
 # Solving H ψ = E ψ
-#
-# np.linalg.eigh solves the eigenvalue problem for a symmetric matrix.
+# np.linalg.eigh solves the eigenvalue problem for a matrix.
 # Returns eigenvalues (energies) in ascending order,
 # and eigenvectors (wavefunctions) as columns of the matrix.
 
@@ -102,3 +102,5 @@ ax.legend(fontsize=9);  ax.grid(alpha=0.25)
 plt.tight_layout()
 plt.savefig('numerov_result.png', dpi=150, bbox_inches='tight')
 plt.show()
+
+
